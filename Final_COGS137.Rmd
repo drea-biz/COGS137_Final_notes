@@ -4,11 +4,118 @@ output: html_notebook
 ---
 # Final Cogs 137 Data Analysis
 Option 2: Data Analysis
+
+## Introduction
+
+This Data Analysis examines the relationship between CO2 emissions, global temperatures, and natural disasters in various countries over time. It draws data from the Environmental Protection Agency. The data demonstrates the impact of CO2 emissions and greenhouse gases on climate and weather patterns. The study focuses on the contribution of different countries to CO2 emissions and their potential effects on global temperatures and natural disasters. The EPA report highlights that CO2 emissions are the primary source of greenhouse gases in the United States, underscoring the urgency of addressing this issue.
+
+
+
+## Questions
+The Analysis is then extended by answering the following questions.
+
+
+1.What are the trends and patterns of CO2 emissions over time?
+
+2.Which countries are the largest contributors to CO2 emissions?
+
+3.How have the contributions of different countries changed over time?
+
+## Package Imports 
+```{r}
+library(tidyverse)
+library(dplyr)
+library(OCSdata) # to read data
+library(here)
+library(readxl)
+library(pdftools)
+library(tidymodels)
+library(viridis)
+library(srvyr)
+```
+## The Data
+The dataset used in this case study is provided by the Carbon Dioxide Information Analysis Center (CDIAC), which is part of the US Department of Energy's Office of Science. The data has been preprocessed and cleaned for use in the Open Case Studies project. The dataset contains data on CO2 emissions from the burning of fossil fuels in million metric tons per year for the entire world, as well as for specific countries, including the United States, China, Russia, India, Japan, Germany, the United Kingdom, Iran, Canada, South Korea, Saudi Arabia, Brazil, and Australia. The dataset covers the period from 1751 to 2017.
+
+We will start by importing and wrangling the data to prepare it for analysis. We will then perform exploratory data analysis to gain insights into the trends and patterns of CO2 emissions over time and across different regions. Finally, we will apply statistical techniques and models to answer our research questions and draw conclusions based on our findings.
+
+###Imports
+
 ```{r}
 
+#raw_data("ocs-bp-co2-emissions", outpath = getwd())
+```
+```{r}
+#Setting the datasets to a variable 
+CO2_emissions <- readxl::read_xlsx(here("OCS_data/data","raw", "yearly_co2_emissions_1000_tonnes.xlsx"))
+gdp_growth    <- readxl::read_xlsx(here("OCS_data/data", "raw", "gdp_per_capita_yearly_growth.xlsx"))
+energy_use    <- readxl::read_xlsx(here("OCS_data/data", "raw", "energy_use_per_person.xlsx"))
+```
+
+
+```{r}
+# Fixing the index error
+us_disaster <- readr::read_csv(here("OCS_data/data", "raw", "disasters.csv"), skip = 2)
+
+us_temperature <- readr::read_csv(here("OCS_data/data", "raw", "temperature.csv"), skip = 4, na = "-99")
+```
+
+
+```{r} 
+# only run once 
+save(CO2_emissions, 
+     gdp_growth,
+     energy_use, 
+     us_disaster, 
+     us_temperature, 
+     file = here::here("OCS_data/data/raw",  "co2_data_imported.rda"))
+```
+
+#### Data summary 
+```{r}
+CO2_emissions
 ```
 
 ```{r}
-
+gdp_growth 
+```
+```{r}
+energy_use
 ```
 
+
+```{r}
+us_temperature
+```
+# Wrangling 
+### CO2 Data Wrangling
+- getting rid of NA 
+-pivoting into long variables
+
+```{r} 
+# code from Orginal Report
+CO2_emissions <- CO2_emissions |>
+  pivot_longer(cols = -country,
+               names_to = "Year",
+               values_to = "Emissions")
+
+set.seed(123)
+```
+
+```{r}
+#Fixing naming 
+
+CO2_emissions1 <- CO2_emissions[, complete.cases(CO2_emissions)]
+```
+
+
+```{r} 
+CO2_emissions %>%
+  slice_sample(n = 6)
+```
+```
+
+
+
+
+#Refrences
+Citations: Wright, Carrie and Ontiveros, Michael and Jager, Leah and Taub, Margaret and Hicks, Stephanie. (2020). https://github.com/opencasestudies/ocs-bp-co2-emissions. Exploring CO2 emissions across time (Version v1.0.0).
