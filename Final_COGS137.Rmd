@@ -1,0 +1,14 @@
+---
+title: "Open Case Studies: Exploring CO2 emissions across time"
+output: html_notebook
+---
+# Final Cogs 137 Data Analysis
+Option 2: Data Analysis
+```{r}
+
+```
+
+```{r}
+
+```
+
