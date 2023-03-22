@@ -102,9 +102,7 @@ set.seed(123)
 ```
 
 ```{r}
-#Fixing naming 
-
-CO2_emissions1 <- CO2_emissions[, complete.cases(CO2_emissions)]
+CO2_emissions
 ```
 
 
